@@ -5,6 +5,7 @@ from pyorbbecsdk import (
     Config,
     OBSensorType,
     OBFrameAggregateOutputMode,
+    OBFormat,
 )
 
 
@@ -33,7 +34,21 @@ class Gemini335Camera:
             profile_list = self.pipeline.get_stream_profile_list(
                 OBSensorType.COLOR_SENSOR
             )
-            color_profile = profile_list.get_default_video_stream_profile()
+            # color_profile = profile_list.get_default_video_stream_profile()
+            # --- 修改：直接指定 1920x1080, MJPG, 30FPS ---
+            color_profile = profile_list.get_video_stream_profile(
+                1920, 1080, OBFormat.MJPG, 30
+            )
+            # # --- 打印确认信息 ---
+            # print(f"----------------------------------------")
+            # print(f"[Info] RGB Profile Selected:")
+            # print(f"       Width : {color_profile.get_width()}")
+            # print(f"       Height: {color_profile.get_height()}")
+            # print(f"       FPS   : {color_profile.get_fps()}")
+            # print(f"       Format: {color_profile.get_format()}")  # 应该是 MJPG (枚举值)
+            # print(f"----------------------------------------")
+            # -------------------------------------------
+
             self.config.enable_stream(color_profile)
 
         elif self.launch_mode == "depth":
